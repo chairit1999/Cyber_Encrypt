@@ -13,7 +13,8 @@ from Crypto.Random import get_random_bytes
 def create_RSA_keys():
     #generate RSA
     key = RSA.generate(2048)
-
+    os.makedirs(os.path.dirname("RSA/private.key"), exist_ok=True)
+    os.makedirs(os.path.dirname("RSA/public.key"), exist_ok=True)
     #create pritekey
     private_key = key.export_key()
     file_out = open("RSA/private.key", "wb")
@@ -29,6 +30,7 @@ def create_RSA_keys():
 # create Digital_signature
 def Digital_signature():
     #get message
+    os.makedirs(os.path.dirname("ciphertext/(enc).ciphertext.txt"), exist_ok=True)
     file_in = open("ciphertext/(enc).ciphertext.txt", "rb")
     ciphertext = file_in.read()
     file_in.close()
@@ -42,6 +44,7 @@ def Digital_signature():
     signature=signer.sign(hash)
 
     #save digital signature 
+    os.makedirs(os.path.dirname("signature/signature.pem"), exist_ok=True)
     file_sig = open("signature/signature.pem", "wb")
     file_sig.write(signature)
     file_sig.close()
@@ -75,10 +78,12 @@ def verify_keys(filename):
 def encrypt(key, filename):
     split = filename.split('.')
     size = 64*1024
+    os.makedirs(os.path.dirname("ciphertext/(enc).ciphertext."+split[1]), exist_ok=True)
     ciphertext = "ciphertext/(enc).ciphertext."+split[1]
     filesize = str(os.path.getsize(filename)).zfill(16)
     IV = Random.new().read(16)
     encryptor = AES.new(key, AES.MODE_CBC, IV)
+
     with open(filename, 'rb') as infile:  
         with open(ciphertext, 'wb') as outfile:  
             outfile.write(filesize.encode('utf-8'))
@@ -90,6 +95,7 @@ def encrypt(key, filename):
                 elif len(chunk) % 16 != 0:
                     chunk += b' '*(16-(len(chunk) % 16))
                 outfile.write(encryptor.encrypt(chunk))
+                
     split = filename.split('.')
     if(split[1] == 'txt'):
         create_RSA_keys()
@@ -99,6 +105,7 @@ def encrypt(key, filename):
 #decrypt 
 def decrypt(key, filename):
     size = 64*1024
+    os.makedirs(os.path.dirname("paintext/paintext"), exist_ok=True)
     painText = 'paintext/paintext'+filename[11:]
     split = filename.split('.')
     if split[1] == 'txt':
@@ -123,6 +130,7 @@ def createAES():
     key = get_random_bytes(32)
     # save AES key
     fileAES = "AES/(enc).aes.txt"
+    os.makedirs(os.path.dirname(fileAES), exist_ok=True)
     with open(fileAES, 'wb') as f:
         f.write(key)
         f.close()
