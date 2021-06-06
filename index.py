@@ -94,6 +94,7 @@ def encrypt(key, filename):
     if(split[1] == 'txt'):
         create_RSA_keys()
         Digital_signature()
+    return True
 
 #decrypt 
 def decrypt(key, filename):
@@ -125,7 +126,7 @@ def createAES():
     with open(fileAES, 'wb') as f:
         f.write(key)
         f.close()
-    print("create AES ")
+    #print("create AES ")
     return key
 
 # get AES for decrypt
@@ -133,22 +134,23 @@ def getAES():
     file_in = open("AES/(enc).aes.txt", "rb")
     key = file_in.read()
     file_in.close()
-    print("get AES ")
+    #print("get AES ")
     return key
 
 def MainFunc():
     while True:
-        choice = int(input(" 1. Press '1' to Encrypt file.\n 2. Press '2' to Decrypt file.\n 3. Press '3' to exit.\nSelect? : "))
-        if choice == 1:
+        num = int(input(" 1. Press '1' to Encrypt file.\n 2. Press '2' to Decrypt file.\n 3. Press '3' to exit.\nSelect? : "))
+        if num == 1:
             filename = input("File encrypt: ")
-            encrypt(createAES(),filename)
-            print("encrypt !!!")
-        elif choice == 2:
+            if(encrypt(createAES(),filename)):
+                print("encrypt !!!")
+        elif num == 2:
             filename = input("File decrypt: ")
             if not decrypt(getAES(),filename):
                 print("cant decrypt")
                 break
-        elif choice == 3:
+            print("decrypt !!!")
+        elif num == 3:
             exit()
         else:
             print("select option 1, 2 or 3")
